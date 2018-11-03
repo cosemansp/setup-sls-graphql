@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "globals": {
+    "afterAll": true,
+    "afterEach": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "fit": true,
+    "it": true,
+    "jasmine": true,
+    "xit": true,
+    "jest": true
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./webpack.config.js"
+      }
+    }
+  },
+  "rules": {
+     "no-console": [0, ""],
+     "no-underscore-dangle": "off",
+     "arrow-body-style": "off"
+  }
+}

@@ -1,0 +1,10 @@
+# Serverless directories
+.serverless
+.build
+.env.production
+
+# Webpack directories
+.webpack
+
+# Npm
+node_modules

@@ -1,0 +1,109 @@
+# ********************************************
+# Product Test Service
+# ********************************************
+
+service: api-product
+
+# The serverless plugins
+# ===================================================================
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-warmup
+  - serverless-dotenv-plugin
+
+# The `provider` defines where your service will be deployed
+# ===================================================================
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-central-1
+  # If you want to change to a different AWS profile
+  # from ~/.aws/credentials, you can do so here
+  profile: peter
+  stage: dev
+  timeout: 10  # (default is 6 seconds)
+  memorySize: 256
+  versionFunctions: true
+  environment:
+    # BUCKET: "${self:custom.bucket}"
+    TEST: ${ssm:supermanToken}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
+    # - Effect: "Allow"
+    #   Action:
+    #     - "s3:ListBucket"
+    #   Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    # - Effect: "Allow"
+    #   Action:
+    #     - "s3:PutObject"
+    #   Resource:
+    #     Fn::Join:
+    #       - ""
+    #       - - "arn:aws:s3:::"
+    #         - "Ref" : "ServerlessDeploymentBucket"
+
+
+# Custom variables
+# ===================================================================
+custom:
+  stage: ${opt:stage, env:AWS_REGION, self:provider.stage}
+  serverless-offline:
+    port: 3000
+  webpack:
+    includeModules: true
+    webpackConfig: ./webpack.config.js
+    packager: 'yarn'   # Packager that will be used to package your external modules
+
+
+# The Lambda function's IAM Role
+# ===================================================================
+
+# Service wide environment variables
+# ===================================================================
+#  environment:
+#    MONGODB_URI: "${env:MONGODB_URI}"
+#    TEST: ${ssm:supermanToken}
+#    DYANMODB_TABLE: "${env:DYANMODB_TABLE}"
+
+
+# The `Functions`
+# ===================================================================
+functions:
+  graphql:
+    handler: src/graphql/handler.default
+    events:
+    - http:
+        path: graphql
+        method: ANY
+        cors: true
+  productsApi:
+    handler: src/api/handlers/products.default
+    warmup: true
+    events:
+      - http:
+          path: api/{proxy+}
+          cors: true
+          method: ANY
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#    environment:
+#      variable2: value2
+
+
+# Additional Resources
+# ===================================================================
+# resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
