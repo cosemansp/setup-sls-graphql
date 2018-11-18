@@ -1,4 +1,4 @@
-# Setup-sls-api
+# Setup-sls-graphql
 
 ## Getting started
 

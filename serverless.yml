@@ -20,7 +20,7 @@ provider:
   region: eu-central-1
   # If you want to change to a different AWS profile
   # from ~/.aws/credentials, you can do so here
-  profile: peter
+  profile: default
   stage: dev
   timeout: 10  # (default is 6 seconds)
   memorySize: 256
@@ -80,14 +80,6 @@ functions:
         path: graphql
         method: ANY
         cors: true
-  productsApi:
-    handler: src/api/handlers/products.default
-    warmup: true
-    events:
-      - http:
-          path: api/{proxy+}
-          cors: true
-          method: ANY
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
